@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bloom Flow - Real-time Execution</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "outline": "#8f909e",
+            "error-container": "#93000a",
+            "primary-fixed-dim": "#bbc3ff",
+            "on-primary": "#001d93",
+            "surface-dim": "#0b1326",
+            "on-tertiary-fixed-variant": "#653e00",
+            "secondary-fixed": "#6ffbbe",
+            "on-tertiary-fixed": "#2a1700",
+            "surface-variant": "#2d3449",
+            "on-secondary": "#003824",
+            "primary-container": "#2243ea",
+            "surface-container-low": "#131b2e",
+            "on-primary-fixed": "#000f5d",
+            "secondary-fixed-dim": "#4edea3",
+            "inverse-surface": "#dae2fd",
+            "on-surface-variant": "#c5c5d4",
+            "surface-container": "#171f33",
+            "error": "#ffb4ab",
+            "secondary": "#4edea3",
+            "on-secondary-fixed-variant": "#005236",
+            "surface-tint": "#bbc3ff",
+            "on-error-container": "#ffdad6",
+            "secondary-container": "#00a572",
+            "surface-bright": "#31394d",
+            "on-tertiary-container": "#ffc988",
+            "on-error": "#690005",
+            "tertiary-fixed-dim": "#ffb95f",
+            "on-primary-container": "#cacfff",
+            "surface-container-lowest": "#060e20",
+            "on-secondary-fixed": "#002113",
+            "on-background": "#dae2fd",
+            "primary-fixed": "#dee0ff",
+            "surface": "#0b1326",
+            "on-surface": "#dae2fd",
+            "tertiary-fixed": "#ffddb8",
+            "outline-variant": "#454652",
+            "on-primary-fixed-variant": "#002ccd",
+            "inverse-on-surface": "#283044",
+            "surface-container-highest": "#2d3449",
+            "on-secondary-container": "#00311f",
+            "background": "#0b1326",
+            "inverse-primary": "#2848ee",
+            "tertiary-container": "#805000",
+            "on-tertiary": "#472a00",
+            "primary": "#bbc3ff",
+            "surface-container-high": "#222a3d",
+            "tertiary": "#ffb95f"
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .canvas-dots {
+      background-image: radial-gradient(circle, #454652 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.1;
+    }
+    .glow-active {
+      box-shadow: 0 0 20px 2px rgba(187, 195, 255, 0.3);
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #454652;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #8f909e;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container h-screen flex flex-col overflow-hidden">
+<!-- TopNavBar Implementation -->
+<header class="bg-[#0b1326] text-[#bbc3ff] font-['Space_Grotesk'] font-bold text-lg docked full-width top-0 no-line bg-[#131b2e] flat no shadows flex justify-between items-center px-6 h-16 w-full z-40">
+<div class="flex items-center gap-8">
+<div class="text-xl font-bold text-[#bbc3ff] tracking-tight">Bloom Flow</div>
+<nav class="hidden md:flex gap-6 items-center h-full">
+<a class="text-[#bbc3ff] border-b-2 border-[#bbc3ff] pb-1 hover:text-white transition-colors" href="#">Graph</a>
+<a class="text-[#c5c5d4] hover:text-white transition-colors" href="#">Chat</a>
+</nav>
+</div>
+<!-- Execution Status & Timer -->
+<div class="flex-1 flex justify-center">
+<div class="flex items-center gap-3 bg-surface-container-lowest px-4 py-1.5 rounded-full border border-outline-variant/20">
+<span class="flex h-2 w-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="text-secondary font-mono text-sm tracking-tighter uppercase">Running</span>
+<div class="w-px h-3 bg-outline-variant"></div>
+<span class="text-on-surface font-mono text-sm">04:25</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<button class="px-4 py-2 bg-primary-container text-on-primary-container rounded-lg text-sm font-semibold scale-95 active:duration-100 transition-all">Run</button>
+<button class="px-4 py-2 border border-outline-variant text-[#c5c5d4] rounded-lg text-sm font-semibold hover:text-white transition-colors">Stop</button>
+</div>
+<div class="flex items-center gap-3 ml-2 border-l border-outline-variant/30 pl-4">
+<span class="material-symbols-outlined cursor-pointer hover:text-white transition-colors" data-icon="save">save</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-white transition-colors" data-icon="settings">settings</span>
+<img alt="User profile" class="w-8 h-8 rounded-full" data-alt="professional portrait of a creative developer in a studio environment with warm ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD0VhzSEmh69WKUryJyfUm-r5ift5eqWSLo7D51mqbBkME_C5EnrQdjCCyzC5_vmxb6OSA8zDoxQGXCdM_sdqzUHxCuJib9FoY7TcxCD-V3WF--F6Ro7tIl0S_2yYjnGYyGqDU-HBkY-kHAXUSbGbe_lvxiEjzSHuOPPANDScoEIaPYsn-V75SrvVIV5dXYkF3WNstHsfKRONE6qkVjEo6ERxXtYT516-ZiCYMT570ifBM6iTvDD3vjsE8r8iMxEOlLez6g8L5uUsk"/>
+</div>
+</div>
+</header>
+<main class="flex-1 flex overflow-hidden relative">
+<!-- SideNavBar (Minimized) -->
+<aside class="bg-[#222a3d] text-[#bbc3ff] font-['Inter'] text-sm font-medium docked left-0 h-full w-20 tonal shift using surface-container-high flat flex flex-col py-4 px-3 gap-6 z-30 transition-all duration-200">
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-2xl" data-icon="memory">memory</span>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">Tools</span>
+</div>
+<div class="flex flex-col gap-4 mt-4">
+<button class="w-12 h-12 flex items-center justify-center bg-[#2d3449] text-[#bbc3ff] rounded-lg transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center text-[#c5c5d4] hover:bg-[#2d3449]/50 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="alt_route">alt_route</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center text-[#c5c5d4] hover:bg-[#2d3449]/50 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="loop">loop</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center text-[#c5c5d4] hover:bg-[#2d3449]/50 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="call_merge">call_merge</span>
+</button>
+</div>
+<div class="mt-auto flex flex-col gap-4">
+<button class="w-12 h-12 flex items-center justify-center text-[#c5c5d4] hover:bg-[#2d3449]/50 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="login">login</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center text-[#c5c5d4] hover:bg-[#2d3449]/50 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+</button>
+</div>
+</aside>
+<!-- Main Execution Area -->
+<section class="flex-1 flex flex-col min-w-0 bg-surface-container-low relative">
+<!-- Graph Canvas -->
+<div class="flex-1 relative overflow-hidden cursor-grab active:cursor-grabbing">
+<div class="absolute inset-0 canvas-dots"></div>
+<!-- Workflow Graph Simulated -->
+<div class="relative w-full h-full p-20">
+<!-- Connections (Simplified) -->
+<svg class="absolute inset-0 pointer-events-none w-full h-full">
+<path d="M 320 200 L 480 200" fill="none" stroke="#454652" stroke-dasharray="4" stroke-width="2"></path>
+<path d="M 720 200 C 800 200, 800 120, 880 120" fill="none" stroke="#4edea3" stroke-width="2"></path>
+<path d="M 720 200 C 800 200, 800 280, 880 280" fill="none" stroke="#454652" stroke-dasharray="4" stroke-width="2"></path>
+</svg>
+<!-- Input Node -->
+<div class="absolute top-[160px] left-[100px] w-56 bg-surface-container-highest rounded-lg p-3 border-l-4 border-primary">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="input">input</span> INPUT
+              </span>
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="check_circle" data-weight="fill">check_circle</span>
+</div>
+<div class="text-xs text-on-surface-variant font-medium">User Query: "Optimise cloud costs"</div>
+</div>
+<!-- Active Worker Node -->
+<div class="absolute top-[140px] left-[480px] w-64 bg-surface-container-highest rounded-lg p-4 border-l-4 border-secondary glow-active transition-all">
+<div class="flex justify-between items-center mb-3">
+<span class="text-xs font-bold text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="memory">memory</span> WORKER
+              </span>
+<span class="text-[10px] text-secondary animate-pulse font-bold">EXECUTING...</span>
+</div>
+<div class="text-sm font-semibold mb-3">Codex-Analysis-V4</div>
+<!-- Progress Bar -->
+<div class="h-1.5 w-full bg-surface-container-lowest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-2/3 transition-all"></div>
+</div>
+<div class="flex justify-between mt-2">
+<span class="text-[10px] text-on-surface-variant">Step 4 of 6</span>
+<span class="text-[10px] text-on-secondary-container bg-secondary/20 px-1 rounded">68%</span>
+</div>
+</div>
+<!-- Logic Node (Pending) -->
+<div class="absolute top-[80px] left-[880px] w-56 bg-surface-container-highest/60 rounded-lg p-3 border-l-4 border-tertiary">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="alt_route">alt_route</span> LOGIC
+              </span>
+</div>
+<div class="text-xs text-on-surface-variant italic">Waiting for Codex...</div>
+</div>
+<!-- Output Node (Pending) -->
+<div class="absolute top-[240px] left-[880px] w-56 bg-surface-container-highest/60 rounded-lg p-3 border-l-4 border-primary">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="output">output</span> OUTPUT
+              </span>
+</div>
+<div class="text-xs text-on-surface-variant italic">Waiting...</div>
+</div>
+</div>
+<!-- Floating Control Actions (Glassmorphism) -->
+<div class="absolute top-6 right-6 flex items-center gap-2 bg-surface-variant/60 backdrop-blur-xl p-2 rounded-xl border border-outline-variant/10 shadow-2xl">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-bright/50 transition-colors text-on-surface" title="Pause">
+<span class="material-symbols-outlined" data-icon="pause">pause</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-bright/50 transition-colors text-on-surface" title="Resume">
+<span class="material-symbols-outlined" data-icon="play_arrow">play_arrow</span>
+</button>
+<div class="w-px h-6 bg-outline-variant/30 mx-1"></div>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-error/20 transition-colors text-error" title="Stop">
+<span class="material-symbols-outlined" data-icon="stop">stop</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-primary-container/20 transition-colors text-primary" title="Step Over">
+<span class="material-symbols-outlined" data-icon="step_over">step_over</span>
+</button>
+</div>
+</div>
+<!-- Logs Bottom Panel -->
+<div class="h-64 bg-surface-container-lowest border-t border-outline-variant/20 flex flex-col z-20">
+<div class="flex items-center justify-between px-4 h-10 bg-surface-container border-b border-outline-variant/10">
+<div class="flex items-center gap-4">
+<span class="text-[11px] font-bold tracking-widest text-secondary flex items-center gap-2 uppercase">
+<span class="material-symbols-outlined text-sm" data-icon="terminal">terminal</span> Live Execution Logs
+            </span>
+<div class="flex items-center gap-2">
+<span class="h-1.5 w-1.5 rounded-full bg-secondary"></span>
+<span class="text-[10px] text-on-surface-variant">42.8 KB streamed</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="text-[10px] text-on-surface-variant hover:text-white transition-colors">CLEAR</button>
+<button class="text-[10px] text-on-surface-variant hover:text-white transition-colors">DOWNLOAD</button>
+<span class="material-symbols-outlined text-sm cursor-pointer text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-4 font-mono text-[13px] leading-relaxed">
+<div class="flex flex-col gap-1 text-on-surface-variant">
+<div class="flex gap-4">
+<span class="text-outline/50">14:21:02</span>
+<span class="text-primary font-bold">[Input]</span>
+<span>Payload received from API gateway. Initializing flow context...</span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline/50">14:21:05</span>
+<span class="text-primary font-bold">[Input]</span>
+<span class="text-secondary-fixed-dim">Success: Flow validation passed.</span>
+</div>
+<div class="flex gap-4 mt-2">
+<span class="text-outline/50">14:21:06</span>
+<span class="text-secondary font-bold">[Codex]</span>
+<span>Loading model weights for cluster-v4-optimization...</span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline/50">14:21:09</span>
+<span class="text-secondary font-bold">[Codex]</span>
+<span>Searching for keywords in user query: "cloud", "costs", "optimise"...</span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline/50">14:21:12</span>
+<span class="text-secondary font-bold">[Codex]</span>
+<span>Cross-referencing historical billing data... </span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline/50">14:21:14</span>
+<span class="text-secondary font-bold">[Codex]</span>
+<span>Applying heuristics: "Idle Resources", "Reserved Instance Coverage".</span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline/50">14:21:15</span>
+<span class="text-secondary font-bold">[Codex]</span>
+<span class="text-on-surface">Found 14 instances of under-utilized EC2 machines in region us-east-1.</span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline/50">14:21:17</span>
+<span class="text-secondary font-bold">[Codex]</span>
+<span class="flex items-center gap-2">
+                Calculating projected savings... 
+                <span class="inline-block w-4 h-px bg-secondary/50 animate-pulse"></span>
+</span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline/50">14:21:20</span>
+<span class="text-secondary font-bold">[Codex]</span>
+<span class="text-secondary animate-pulse italic">Generating optimization report summary...</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Implementation -->
+<footer class="fixed bottom-0 w-full flex justify-between items-center px-4 z-50 bg-[#060e20] text-[#4edea3] font-['Inter'] text-xs uppercase tracking-widest docked full-width bottom-0 h-8 border-t border-[#454652]/20 flat transition-all duration-200">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-[#4edea3] rounded-full"></span>
+<span>System Active</span>
+</div>
+<div class="w-px h-3 bg-outline-variant/30"></div>
+<div class="flex items-center gap-4 text-[#c5c5d4]">
+<span class="cursor-pointer hover:text-white transition-colors">Terminal</span>
+<span class="cursor-pointer hover:text-white transition-colors">Logs</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-[#c5c5d4]">Uptime: 99.9%</span>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="wifi">wifi</span>
+<span>LATENCY: 24ms</span>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "outline": "#8f909e",
+            "error-container": "#93000a",
+            "primary-fixed-dim": "#bbc3ff",
+            "on-primary": "#001d93",
+            "surface-dim": "#0b1326",
+            "on-tertiary-fixed-variant": "#653e00",
+            "secondary-fixed": "#6ffbbe",
+            "on-tertiary-fixed": "#2a1700",
+            "surface-variant": "#2d3449",
+            "on-secondary": "#003824",
+            "primary-container": "#2243ea",
+            "surface-container-low": "#131b2e",
+            "on-primary-fixed": "#000f5d",
+            "secondary-fixed-dim": "#4edea3",
+            "inverse-surface": "#dae2fd",
+            "on-surface-variant": "#c5c5d4",
+            "surface-container": "#171f33",
+            "error": "#ffb4ab",
+            "secondary": "#4edea3",
+            "on-secondary-fixed-variant": "#005236",
+            "surface-tint": "#bbc3ff",
+            "on-error-container": "#ffdad6",
+            "secondary-container": "#00a572",
+            "surface-bright": "#31394d",
+            "on-tertiary-container": "#ffc988",
+            "on-error": "#690005",
+            "tertiary-fixed-dim": "#ffb95f",
+            "on-primary-container": "#cacfff",
+            "surface-container-lowest": "#060e20",
+            "on-secondary-fixed": "#002113",
+            "on-background": "#dae2fd",
+            "primary-fixed": "#dee0ff",
+            "surface": "#0b1326",
+            "on-surface": "#dae2fd",
+            "tertiary-fixed": "#ffddb8",
+            "outline-variant": "#454652",
+            "on-primary-fixed-variant": "#002ccd",
+            "inverse-on-surface": "#283044",
+            "surface-container-highest": "#2d3449",
+            "on-secondary-container": "#00311f",
+            "background": "#0b1326",
+            "inverse-primary": "#2848ee",
+            "tertiary-container": "#805000",
+            "on-tertiary": "#472a00",
+            "primary": "#bbc3ff",
+            "surface-container-high": "#222a3d",
+            "tertiary": "#ffb95f"
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-card {
+      background: rgba(45, 52, 73, 0.6);
+      backdrop-filter: blur(12px);
+    }
+    .node-aura:hover {
+      box-shadow: 0 0 15px -2px rgba(187, 195, 255, 0.3);
+    }
+    body {
+      background-color: #0b1326;
+      color: #dae2fd;
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="overflow-hidden flex flex-col h-screen">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-6 h-16 w-full z-50 bg-[#0b1326] no-line bg-[#131b2e] sticky top-0">
+<div class="flex items-center gap-8">
+<div class="font-['Space_Grotesk'] font-bold text-[#bbc3ff] tracking-tight text-xl">Bloom Flow</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="font-['Space_Grotesk'] font-bold text-lg text-[#c5c5d4] hover:text-white transition-colors scale-95 active:duration-100" href="#">Graph</a>
+<a class="font-['Space_Grotesk'] font-bold text-lg text-[#c5c5d4] hover:text-white transition-colors scale-95 active:duration-100" href="#">Chat</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 mr-4">
+<button class="material-symbols-outlined text-[#c5c5d4] hover:text-white transition-colors" data-icon="save">save</button>
+<button class="material-symbols-outlined text-[#c5c5d4] hover:text-white transition-colors" data-icon="settings">settings</button>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-1.5 rounded-lg text-sm font-bold bg-[#0b1326] text-[#bbc3ff] border border-[#bbc3ff]/20 hover:border-[#bbc3ff] transition-all">Stop</button>
+<button class="px-4 py-1.5 rounded-lg text-sm font-bold bg-[#2243ea] text-[#cacfff] shadow-lg shadow-[#2243ea]/20 transition-transform active:scale-95">Run</button>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col py-4 px-3 gap-2 w-64 h-full bg-[#222a3d] tonal shift using surface-container-high border-r border-outline-variant/10">
+<div class="px-3 mb-6">
+<div class="text-[#bbc3ff] text-lg font-black font-['Space_Grotesk']">Toolbox</div>
+<div class="text-[#c5c5d4] text-[10px] uppercase tracking-widest font-medium">Drag nodes to canvas</div>
+</div>
+<nav class="flex flex-col gap-1">
+<div class="flex items-center gap-3 px-3 py-2.5 text-[#c5c5d4] font-['Inter'] text-sm font-medium hover:bg-[#2d3449]/50 transition-all duration-200 cursor-pointer rounded-lg">
+<span class="material-symbols-outlined text-lg" data-icon="memory">memory</span>
+<span>Worker</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 text-[#c5c5d4] font-['Inter'] text-sm font-medium hover:bg-[#2d3449]/50 transition-all duration-200 cursor-pointer rounded-lg">
+<span class="material-symbols-outlined text-lg" data-icon="alt_route">alt_route</span>
+<span>Branch</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 text-[#c5c5d4] font-['Inter'] text-sm font-medium hover:bg-[#2d3449]/50 transition-all duration-200 cursor-pointer rounded-lg">
+<span class="material-symbols-outlined text-lg" data-icon="loop">loop</span>
+<span>Loop</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 text-[#c5c5d4] font-['Inter'] text-sm font-medium hover:bg-[#2d3449]/50 transition-all duration-200 cursor-pointer rounded-lg">
+<span class="material-symbols-outlined text-lg" data-icon="call_merge">call_merge</span>
+<span>Merge</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 text-[#c5c5d4] font-['Inter'] text-sm font-medium hover:bg-[#2d3449]/50 transition-all duration-200 cursor-pointer rounded-lg">
+<span class="material-symbols-outlined text-lg" data-icon="login">login</span>
+<span>Input</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 text-[#c5c5d4] font-['Inter'] text-sm font-medium hover:bg-[#2d3449]/50 transition-all duration-200 cursor-pointer rounded-lg">
+<span class="material-symbols-outlined text-lg" data-icon="logout">logout</span>
+<span>Output</span>
+</div>
+</nav>
+<div class="mt-auto px-3">
+<button class="w-full py-3 bg-[#bbc3ff] text-[#001d93] font-bold rounded-xl flex items-center justify-center gap-2 shadow-xl shadow-[#bbc3ff]/10 hover:brightness-110 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+          Add Node
+        </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 bg-[#131b2e] overflow-y-auto p-8 relative">
+<!-- Search and Filter Bar -->
+<div class="max-w-6xl mx-auto mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-4 flex-1 max-w-2xl">
+<h1 class="text-3xl font-bold font-['Space_Grotesk'] text-[#dae2fd]">Orchestration Templates</h1>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors" data-icon="search">search</span>
+<input class="w-full bg-[#060e20] border-none ring-1 ring-outline-variant/30 focus:ring-2 focus:ring-primary/50 rounded-xl py-3.5 pl-12 pr-4 text-[#dae2fd] placeholder:text-outline/60 font-body text-sm transition-all" placeholder="Search your flows, agents, or templates..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#bbc3ff] text-[#001d93]">My Workflows</button>
+<button class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#2d3449] text-[#c5c5d4] hover:bg-[#31394d] transition-colors">Shared</button>
+<button class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#2d3449] text-[#c5c5d4] hover:bg-[#31394d] transition-colors">Templates</button>
+</div>
+</div>
+<button class="px-6 py-4 bg-primary-container text-on-primary-container font-bold rounded-xl flex items-center gap-3 shadow-lg shadow-primary-container/20 hover:scale-[1.02] transition-transform active:scale-95">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+          Create New Workflow
+        </button>
+</div>
+<!-- Bento Grid for Workflows -->
+<div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Workflow Card 1 -->
+<div class="group relative bg-[#222a3d] rounded-2xl overflow-hidden border border-outline-variant/5 hover:border-primary/20 transition-all duration-300 flex flex-col node-aura">
+<div class="absolute top-0 left-0 w-1 h-12 bg-secondary rounded-full mt-6"></div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline font-bold text-lg text-primary-fixed-dim">Code Review Pipeline</h3>
+<p class="text-xs text-on-surface-variant font-body mt-1">Automated PR analysis &amp; security check</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-white cursor-pointer" data-icon="more_vert">more_vert</span>
+</div>
+<!-- Mini Graph Preview -->
+<div class="h-32 bg-[#060e20]/50 rounded-xl mb-4 relative overflow-hidden flex items-center justify-center border border-outline-variant/10">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-lg bg-[#2d3449] border border-secondary/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="terminal">terminal</span>
+</div>
+<div class="w-12 h-0.5 bg-outline-variant/30"></div>
+<div class="w-8 h-8 rounded-lg bg-[#2d3449] border border-primary/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="security">security</span>
+</div>
+<div class="w-12 h-0.5 bg-outline-variant/30"></div>
+<div class="w-8 h-8 rounded-lg bg-[#2d3449] border border-tertiary/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-sm" data-icon="chat">chat</span>
+</div>
+</div>
+<!-- Decorative Grid dots -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#454652 1px, transparent 0); background-size: 12px 12px;"></div>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between text-[11px] uppercase tracking-wider font-bold text-outline">
+<span>Involved Agents</span>
+<span>3 Nodes</span>
+</div>
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-[#222a3d] object-cover" data-alt="close-up portrait of a digital security expert with glasses in a dark tech environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_xgYG0yt69fJMWQehsAF-P2r3hrUptqT5OdUGnKk3S9i2YKFNqBsYDTjeaZpYD5m0TGLAGGipb7oUS_cZiaN48SPmToe8KYFR_iDCPBxiaH_iD5R1jEkfuCa4MMJM8pBsw6JAZmeMrxQumtITfQ4L33IdMyzJHZl9olWHUgLWmRoCaaNUuvctdOPDBe81HnQKEy5VHJRdA-W1XU-tWAUsBUnhGD2UbKBQ-Y0IJ3yxNG-nb8I5Xfx4-5YIU0okmTLBcx3THZ4oyCym"/>
+<img class="w-8 h-8 rounded-full border-2 border-[#222a3d] object-cover" data-alt="stylized 3d avatar of a programmer with blue ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARsmSx-qiyo45McZbgS2qe6PqRkxi4QjMdEnab6uRtEt2N62sqhhEo1p5U6wtpmEu7WK1ZWpMOhFf12lu5VHp0qPkDfMGYksJs0YrzWUNpcwvswJwlJ2FYZ0HN7Iyg5iCKXOcN27cFaJXi54Ws8paZ-e6BnyxaTIdYsQo0jaMZNus_6suFDg7A6jijFOwYAc0LnMUe2XF20yD1Q7_E3ylLwZKb8YOYrhSkwf_BuJaZe9r-TtdUZGCZZlygcz1kH6LxAD6kOPADn_iT"/>
+<div class="w-8 h-8 rounded-full border-2 border-[#222a3d] bg-surface-container-highest flex items-center justify-center text-[10px] font-bold text-primary">+1</div>
+</div>
+</div>
+</div>
+<div class="mt-auto p-4 bg-[#2d3449]/40 border-t border-outline-variant/10 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-xs text-on-surface-variant">Last run 2m ago</span>
+</div>
+<button class="text-xs font-bold text-primary hover:underline">View Flow</button>
+</div>
+</div>
+<!-- Workflow Card 2 -->
+<div class="group relative bg-[#222a3d] rounded-2xl overflow-hidden border border-outline-variant/5 hover:border-primary/20 transition-all duration-300 flex flex-col node-aura">
+<div class="absolute top-0 left-0 w-1 h-12 bg-tertiary rounded-full mt-6"></div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline font-bold text-lg text-primary-fixed-dim">Research Assistant</h3>
+<p class="text-xs text-on-surface-variant font-body mt-1">Deep web crawling &amp; synthesis</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-white cursor-pointer" data-icon="more_vert">more_vert</span>
+</div>
+<div class="h-32 bg-[#060e20]/50 rounded-xl mb-4 relative overflow-hidden flex items-center justify-center border border-outline-variant/10">
+<div class="grid grid-cols-2 gap-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-[#2d3449] border border-tertiary/40"></div>
+<div class="w-10 h-1.5 bg-outline-variant/20 rounded-full"></div>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-[#2d3449] border border-primary/40"></div>
+<div class="w-10 h-1.5 bg-outline-variant/20 rounded-full"></div>
+</div>
+</div>
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#454652 1px, transparent 0); background-size: 12px 12px;"></div>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between text-[11px] uppercase tracking-wider font-bold text-outline">
+<span>Involved Agents</span>
+<span>5 Nodes</span>
+</div>
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-[#222a3d] object-cover" data-alt="professional woman in modern workspace with soft golden lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgweM8aCPbAnbUWGOU4_QcWpaI3YOkZn8Qop7hH_CET_Rl-KJOLTIKPP5vaJQ8k5w7pqK0QVTan866NckihERPKWFelYPQumuH3hAf29h0PMKOiW9rsDX9Xrt2DyKbppLSfFHqR1u_1PmBTF74LHvgE-BPThj5THEl77Qci0VDXE9d-zN1c_aeESWLvQBhkmwXnuigMRI94MDea0bq7RiD8sEQKrh8ovATkkpdvK7czK9u-Wj3EXYb-eOFbE_WQwBZ65k1eA0aj5F3"/>
+<img class="w-8 h-8 rounded-full border-2 border-[#222a3d] object-cover" data-alt="young man in creative studio with teal and orange backlighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZivpf1ujVfALL85LCcTo8deZBUInHqQQuBlXTiXwKaNTRaYCxPiCFosDwIqKj_OCAc9o64YWZup1xgSb_2Y0r6L7dTe3qsR2u9raFJXUpRgsiBwbMfTAov_VQZrJZQycE7koGR41FVGZfG1uk_JIaOexZMLGhwDOh841ycPuflu3uOzkA053Xr-14jmixhWhMbI9QWmz4hnkldPTCsdRmEW8ZSM4AZZQmDut0A8oOoeD1itQolaIzpFb-m9SZiz_z49eedsGxigd_"/>
+<div class="w-8 h-8 rounded-full border-2 border-[#222a3d] bg-surface-container-highest flex items-center justify-center text-[10px] font-bold text-primary">+3</div>
+</div>
+</div>
+</div>
+<div class="mt-auto p-4 bg-[#2d3449]/40 border-t border-outline-variant/10 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+<span class="text-xs text-on-surface-variant">Last run 14h ago</span>
+</div>
+<button class="text-xs font-bold text-primary hover:underline">View Flow</button>
+</div>
+</div>
+<!-- Workflow Card 3 -->
+<div class="group relative bg-[#222a3d] rounded-2xl overflow-hidden border border-outline-variant/5 hover:border-primary/20 transition-all duration-300 flex flex-col node-aura">
+<div class="absolute top-0 left-0 w-1 h-12 bg-primary rounded-full mt-6"></div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline font-bold text-lg text-primary-fixed-dim">Customer Support Bot</h3>
+<p class="text-xs text-on-surface-variant font-body mt-1">Multi-modal ticket routing</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-white cursor-pointer" data-icon="more_vert">more_vert</span>
+</div>
+<div class="h-32 bg-[#060e20]/50 rounded-xl mb-4 relative overflow-hidden flex flex-col items-center justify-center border border-outline-variant/10 p-4">
+<div class="w-full flex justify-between mb-2">
+<div class="w-6 h-6 rounded-full bg-primary/20 border border-primary/40"></div>
+<div class="w-6 h-6 rounded-full bg-primary/20 border border-primary/40"></div>
+</div>
+<div class="w-8 h-8 rounded bg-[#2d3449] border border-secondary/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="hub">hub</span>
+</div>
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#454652 1px, transparent 0); background-size: 12px 12px;"></div>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between text-[11px] uppercase tracking-wider font-bold text-outline">
+<span>Involved Agents</span>
+<span>2 Nodes</span>
+</div>
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-[#222a3d] object-cover" data-alt="minimalist 3d character design of a helpful assistant on a dark gradient background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSIIUEpJSWtPJ1u0z7scWt0PIBQmFGXPGwqKkxcyMGJX8fpnVxdzXZSZXB28108Zh-l1TiuMC7Tgzj9oMupfK8RXkrOuPYXoyWziLR263_y_tNs6Jl5NoXsrans20Wn0UYy3R4NWXor5CIQLm8o6zRKH-_MyLCzUno7LcONOlTMaQPhJ2iKLakOu8cGDqPPSgDPRIhKCtWYU4INAb6R5Hi2bFNMqhgHYciC60jJBm4GPXUHCRY4JRX-0oozs44fHPAolK2bB1GPvuN"/>
+<img class="w-8 h-8 rounded-full border-2 border-[#222a3d] object-cover" data-alt="close-up of a friendly support agent in a modern tech setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkmZafJkt3r12gGqdYmFNXIJNewE2lAmDLAcvMUJEwEyym1t4JC5cTHBWo29WCVqGcjCjIo9UihF1wj2HeduW6PGqmqyIpX6mwk66h5hNbUexnylEWDYwVeeTrs6FY_Bl2jTu1SPu73Yu6vTypkbY39oGmrT7G2Um3lR3qkVZLv4i1J0KqQDXn9Q3ASUgt6e4FyZFUEhsuCefaJy9w3TB7Xp0e59t-cvChRZiikS-5J1I7nP7TgxZCs4wbcthjfUFXRVl_P7bTLvpz"/>
+</div>
+</div>
+</div>
+<div class="mt-auto p-4 bg-[#2d3449]/40 border-t border-outline-variant/10 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="text-xs text-on-surface-variant">Failed 1h ago</span>
+</div>
+<button class="text-xs font-bold text-primary hover:underline">Debug</button>
+</div>
+</div>
+<!-- Empty State / Add Card -->
+<div class="border-2 border-dashed border-outline-variant/20 rounded-2xl flex flex-col items-center justify-center p-8 hover:bg-[#222a3d]/30 transition-colors cursor-pointer group">
+<div class="w-14 h-14 rounded-full bg-[#2d3449] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="add_circle">add_circle</span>
+</div>
+<p class="font-bold text-on-surface-variant">New Template</p>
+<p class="text-xs text-outline text-center mt-2">Start with a blank canvas or browse community nodes.</p>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer Status Bar -->
+<footer class="fixed bottom-0 w-full flex justify-between items-center px-4 z-50 bg-[#060e20] border-t border-[#454652]/20 h-8 font-['Inter'] text-xs uppercase tracking-widest text-[#4edea3]">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>System Active</span>
+</div>
+<div class="text-[#c5c5d4] cursor-pointer hover:text-white transition-colors">Terminal</div>
+<div class="text-[#c5c5d4] cursor-pointer hover:text-white transition-colors">Logs</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs" data-icon="memory">memory</span>
+<span>Uptime: 99.9%</span>
+</div>
+</footer>
+</body></html>

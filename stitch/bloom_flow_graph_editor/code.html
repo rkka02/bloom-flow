@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "outline": "#8f909e",
+            "error-container": "#93000a",
+            "primary-fixed-dim": "#bbc3ff",
+            "on-primary": "#001d93",
+            "surface-dim": "#0b1326",
+            "on-tertiary-fixed-variant": "#653e00",
+            "secondary-fixed": "#6ffbbe",
+            "on-tertiary-fixed": "#2a1700",
+            "surface-variant": "#2d3449",
+            "on-secondary": "#003824",
+            "primary-container": "#2243ea",
+            "surface-container-low": "#131b2e",
+            "on-primary-fixed": "#000f5d",
+            "secondary-fixed-dim": "#4edea3",
+            "inverse-surface": "#dae2fd",
+            "on-surface-variant": "#c5c5d4",
+            "surface-container": "#171f33",
+            "error": "#ffb4ab",
+            "secondary": "#4edea3",
+            "on-secondary-fixed-variant": "#005236",
+            "surface-tint": "#bbc3ff",
+            "on-error-container": "#ffdad6",
+            "secondary-container": "#00a572",
+            "surface-bright": "#31394d",
+            "on-tertiary-container": "#ffc988",
+            "on-error": "#690005",
+            "tertiary-fixed-dim": "#ffb95f",
+            "on-primary-container": "#cacfff",
+            "surface-container-lowest": "#060e20",
+            "on-secondary-fixed": "#002113",
+            "on-background": "#dae2fd",
+            "primary-fixed": "#dee0ff",
+            "surface": "#0b1326",
+            "on-surface": "#dae2fd",
+            "tertiary-fixed": "#ffddb8",
+            "outline-variant": "#454652",
+            "on-primary-fixed-variant": "#002ccd",
+            "inverse-on-surface": "#283044",
+            "surface-container-highest": "#2d3449",
+            "on-secondary-container": "#00311f",
+            "background": "#0b1326",
+            "inverse-primary": "#2848ee",
+            "tertiary-container": "#805000",
+            "on-tertiary": "#472a00",
+            "primary": "#bbc3ff",
+            "surface-container-high": "#222a3d",
+            "tertiary": "#ffb95f"
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .canvas-grid {
+      background-image: radial-gradient(#454652 1px, transparent 0);
+      background-size: 40px 40px;
+      background-position: -19px -19px;
+    }
+    .node-aura {
+      box-shadow: 0 0 15px rgba(187, 195, 255, 0.2);
+    }
+    .node-running-glow {
+      box-shadow: 0 0 20px rgba(78, 222, 163, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body overflow-hidden h-screen flex flex-col">
+<!-- TopNavBar (Shared Component) -->
+<header class="flex justify-between items-center px-6 h-16 w-full bg-[#131b2e] z-50">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold text-[#bbc3ff] tracking-tight font-['Space_Grotesk']">Bloom Flow</span>
+<nav class="hidden md:flex gap-6">
+<a class="font-['Space_Grotesk'] font-bold text-lg text-[#bbc3ff] border-b-2 border-[#bbc3ff] pb-1 hover:text-white transition-colors" href="#">Graph</a>
+<a class="font-['Space_Grotesk'] font-bold text-lg text-[#c5c5d4] hover:text-white transition-colors" href="#">Chat</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-[#c5c5d4] hover:text-white transition-colors">save</button>
+<button class="material-symbols-outlined text-[#c5c5d4] hover:text-white transition-colors">settings</button>
+<div class="h-8 w-[1px] bg-outline-variant/30 mx-2"></div>
+<button class="px-4 py-1.5 bg-secondary-container text-on-secondary-container rounded-lg font-bold text-sm scale-95 active:duration-100 transition-all">Run</button>
+<button class="px-4 py-1.5 border border-outline-variant text-[#c5c5d4] rounded-lg font-bold text-sm hover:bg-surface-variant transition-colors">Stop</button>
+</div>
+</header>
+<main class="flex-1 flex overflow-hidden">
+<!-- SideNavBar (Shared Component) -->
+<aside class="flex flex-col py-4 px-3 gap-2 bg-[#222a3d] h-full w-64 z-40">
+<div class="px-3 mb-6">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm">construction</span>
+</div>
+<span class="text-lg font-black text-[#bbc3ff]">Toolbox</span>
+</div>
+<p class="text-xs text-on-surface-variant font-medium">Drag nodes to canvas</p>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-3 p-3 bg-[#2d3449] text-[#bbc3ff] rounded-lg cursor-grab transition-all duration-200">
+<span class="material-symbols-outlined">memory</span>
+<span class="text-sm font-medium">Worker</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-[#c5c5d4] hover:bg-[#2d3449]/50 rounded-lg cursor-grab transition-all duration-200">
+<span class="material-symbols-outlined">alt_route</span>
+<span class="text-sm font-medium">Branch</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-[#c5c5d4] hover:bg-[#2d3449]/50 rounded-lg cursor-grab transition-all duration-200">
+<span class="material-symbols-outlined">loop</span>
+<span class="text-sm font-medium">Loop</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-[#c5c5d4] hover:bg-[#2d3449]/50 rounded-lg cursor-grab transition-all duration-200">
+<span class="material-symbols-outlined">call_merge</span>
+<span class="text-sm font-medium">Merge</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-[#c5c5d4] hover:bg-[#2d3449]/50 rounded-lg cursor-grab transition-all duration-200">
+<span class="material-symbols-outlined">login</span>
+<span class="text-sm font-medium">Input</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-[#c5c5d4] hover:bg-[#2d3449]/50 rounded-lg cursor-grab transition-all duration-200">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-sm font-medium">Output</span>
+</div>
+</div>
+<div class="mt-auto p-3">
+<button class="w-full py-2.5 bg-primary-container text-on-primary-container rounded-lg font-bold text-sm transition-transform active:scale-95">
+          Add Node
+        </button>
+</div>
+</aside>
+<!-- Main Canvas Area -->
+<div class="flex-1 relative bg-surface-container-low canvas-grid overflow-hidden group">
+<!-- Edges (SVG Overlay) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-0">
+<defs>
+<marker id="arrowhead" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5">
+<polygon fill="#454652" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<!-- Edge: Worker to Branch -->
+<path d="M 280 200 L 450 200" fill="none" stroke="#4edea3" stroke-dasharray="5,5" stroke-width="2"></path>
+<!-- Edge: Branch to Merge -->
+<path d="M 610 180 L 780 120" fill="none" marker-end="url(#arrowhead)" stroke="#454652" stroke-width="2"></path>
+<!-- Edge: Branch to Revision (Looping back) -->
+<path d="M 530 240 Q 400 350 160 240" fill="none" stroke="#ffb95f" stroke-dasharray="5,5" stroke-width="2"></path>
+<!-- Edge: Branch to Loop -->
+<path d="M 610 220 L 780 300" fill="none" marker-end="url(#arrowhead)" stroke="#454652" stroke-width="2"></path>
+</svg>
+<!-- Canvas Nodes -->
+<!-- Node 1: Worker (Running) -->
+<div class="absolute left-40 top-32 w-60 bg-surface-container-highest rounded-xl border-l-4 border-secondary node-running-glow overflow-hidden z-10 transition-transform hover:scale-105 cursor-pointer">
+<div class="p-4">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-lg">memory</span>
+<span class="text-sm font-bold tracking-wide uppercase text-secondary">Worker</span>
+</div>
+<span class="material-symbols-outlined text-secondary animate-pulse text-sm">radio_button_checked</span>
+</div>
+<h3 class="text-white font-medium mb-1">Codex Searcher</h3>
+<p class="text-[10px] text-on-surface-variant tracking-wider uppercase">Running...</p>
+</div>
+<div class="bg-surface-container-lowest/50 px-4 py-2 border-t border-outline-variant/10 flex justify-between items-center">
+<span class="text-[10px] text-on-surface-variant font-mono">ID: W-082</span>
+<div class="flex -space-x-2">
+<div class="w-5 h-5 rounded-full border border-surface bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px]">database</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Node 2: Branch (Waiting) -->
+<div class="absolute left-[450px] top-32 w-60 bg-surface-container-highest rounded-xl border-l-4 border-tertiary node-aura overflow-hidden z-10 transition-transform hover:scale-105 cursor-pointer">
+<div class="p-4">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-lg">alt_route</span>
+<span class="text-sm font-bold tracking-wide uppercase text-tertiary">Branch</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">hourglass_empty</span>
+</div>
+<h3 class="text-white font-medium mb-1">Review Logic</h3>
+<div class="flex flex-col gap-2 mt-4">
+<div class="flex items-center justify-between bg-surface-container px-2 py-1 rounded text-[10px] text-on-surface-variant">
+<span>If: quality &gt; 0.8</span>
+<span class="text-secondary">Approved</span>
+</div>
+<div class="flex items-center justify-between bg-surface-container px-2 py-1 rounded text-[10px] text-on-surface-variant">
+<span>Else: retry</span>
+<span class="text-tertiary">Revision</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Node 3: Loop (Analysis) -->
+<div class="absolute left-[780px] top-56 w-60 bg-surface-container-highest rounded-xl border-l-4 border-primary node-aura overflow-hidden z-10 transition-transform hover:scale-105 cursor-pointer">
+<div class="p-4">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">loop</span>
+<span class="text-sm font-bold tracking-wide uppercase text-primary">Loop</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">sync</span>
+</div>
+<h3 class="text-white font-medium mb-1">Deep Analysis</h3>
+<div class="mt-4 flex items-center gap-3">
+<div class="relative w-10 h-10 flex items-center justify-center">
+<svg class="w-full h-full rotate-[-90deg]">
+<circle class="text-outline-variant/20" cx="20" cy="20" fill="transparent" r="16" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-primary" cx="20" cy="20" fill="transparent" r="16" stroke="currentColor" stroke-dasharray="100" stroke-dashoffset="35" stroke-width="4"></circle>
+</svg>
+<span class="absolute text-[8px] font-bold">65%</span>
+</div>
+<p class="text-[10px] text-on-surface-variant italic">Refining results across 5 iterations...</p>
+</div>
+</div>
+</div>
+<!-- Node 4: Done -->
+<div class="absolute left-[1100px] top-32 w-52 bg-surface-container-highest rounded-xl border-l-4 border-secondary/40 overflow-hidden z-10 opacity-60">
+<div class="p-4">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-lg">check_circle</span>
+<span class="text-sm font-bold tracking-wide uppercase text-secondary">Output</span>
+</div>
+</div>
+<h3 class="text-white/60 font-medium">Synthesis Done</h3>
+</div>
+</div>
+<!-- Floating Toolbar -->
+<div class="absolute bottom-10 left-10 flex gap-2 p-2 bg-surface-variant/60 backdrop-blur-md rounded-xl border border-outline-variant/20 shadow-2xl z-40">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-bright transition-colors text-on-surface-variant hover:text-white">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-bright transition-colors text-on-surface-variant hover:text-white">
+<span class="material-symbols-outlined">zoom_out</span>
+</button>
+<div class="w-[1px] h-6 bg-outline-variant/30 self-center"></div>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-bright transition-colors text-on-surface-variant hover:text-white">
+<span class="material-symbols-outlined">center_focus_strong</span>
+</button>
+<div class="w-[1px] h-6 bg-outline-variant/30 self-center"></div>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-bright transition-colors text-on-surface-variant hover:text-white">
+<span class="material-symbols-outlined">undo</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-bright transition-colors text-on-surface-variant hover:text-white">
+<span class="material-symbols-outlined">redo</span>
+</button>
+</div>
+<!-- Side Property Panel (Right Side) -->
+<aside class="absolute top-0 right-0 h-full w-80 bg-surface-container-high/90 backdrop-blur-xl border-l border-outline-variant/10 z-40 p-8 shadow-[-20px_0_40px_rgba(6,14,32,0.4)]">
+<div class="flex items-center justify-between mb-8">
+<h2 class="font-headline text-lg font-bold text-white">Node Properties</h2>
+<button class="material-symbols-outlined text-on-surface-variant">close</button>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-primary">Component Type</label>
+<div class="p-3 bg-surface-container-lowest rounded-lg flex items-center gap-3 border border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary">memory</span>
+<span class="text-sm font-medium">Worker Node</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Model</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border-none rounded-lg text-sm p-3 appearance-none focus:ring-1 focus:ring-primary text-white">
+<option>gpt-4o</option>
+<option>claude-3.5-sonnet</option>
+<option>llama-3-70b</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Role</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-lg text-sm p-3 focus:ring-1 focus:ring-primary text-white" type="text" value="Researcher"/>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Prompt Configuration</label>
+<textarea class="w-full bg-surface-container-lowest border-none rounded-lg text-sm p-4 focus:ring-1 focus:ring-primary text-white resize-none" rows="6">Search for recent papers on LLM agents. Focus specifically on orchestration frameworks and multi-agent debate protocols from 2024.</textarea>
+</div>
+<div class="pt-4 border-t border-outline-variant/10">
+<button class="w-full py-3 bg-primary-container text-on-primary-container rounded-lg font-bold text-sm shadow-lg shadow-primary-container/20">
+              Apply Changes
+            </button>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="fixed bottom-0 w-full flex justify-between items-center px-4 z-50 bg-[#060e20] h-8 border-t border-[#454652]/20">
+<div class="flex items-center gap-4">
+<span class="font-['Inter'] text-xs uppercase tracking-widest text-[#4edea3]">System Active</span>
+<div class="flex gap-4">
+<a class="font-['Inter'] text-xs uppercase tracking-widest text-[#c5c5d4] hover:text-white" href="#">Terminal</a>
+<a class="font-['Inter'] text-xs uppercase tracking-widest text-[#c5c5d4] hover:text-white" href="#">Logs</a>
+</div>
+</div>
+<div class="font-['Inter'] text-xs uppercase tracking-widest text-[#4edea3]">Uptime: 99.9%</div>
+</footer>
+</body></html>

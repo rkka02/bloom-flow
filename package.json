@@ -1,0 +1,20 @@
+{
+  "name": "bloom",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/shared",
+    "packages/server",
+    "packages/web"
+  ],
+  "scripts": {
+    "predev": "node scripts/kill-port.mjs 3101 3102",
+    "dev": "concurrently --kill-others -n server,web -c magenta,cyan \"npm run dev -w packages/server\" \"npm run dev -w packages/web\"",
+    "build": "npm run build --workspaces",
+    "check": "npm run build --workspaces"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Surface hierarchy (No-Line Rule: bg shifts only) ── */
+  --color-surface: #0b1326;
+  --color-surface-dim: #0b1326;
+  --color-surface-container-lowest: #060e20;
+  --color-surface-container-low: #131b2e;
+  --color-surface-container: #171f33;
+  --color-surface-container-high: #222a3d;
+  --color-surface-container-highest: #2d3449;
+  --color-surface-bright: #31394d;
+  --color-surface-variant: #2d3449;
+  --color-surface-tint: #bbc3ff;
+
+  /* ── Functional palette ── */
+  --color-primary: #bbc3ff;
+  --color-primary-container: #2243ea;
+  --color-primary-fixed-dim: #bbc3ff;
+  --color-on-primary: #001d93;
+  --color-on-primary-container: #cacfff;
+
+  --color-secondary: #4edea3;
+  --color-secondary-container: #00a572;
+  --color-on-secondary-container: #00311f;
+
+  --color-tertiary: #ffb95f;
+  --color-tertiary-container: #805000;
+
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+
+  --color-on-surface: #dae2fd;
+  --color-on-surface-variant: #c5c5d4;
+  --color-on-background: #dae2fd;
+  --color-outline: #8f909e;
+  --color-outline-variant: #454652;
+
+  --color-inverse-surface: #dae2fd;
+  --color-inverse-on-surface: #283044;
+
+  /* ── Typography ── */
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Inter", sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #454652; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #8f909e; }
+
+/* ── Canvas grid dots (10% opacity per spec) ── */
+.canvas-dots {
+  background-image: radial-gradient(circle, #454652 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.1;
+}
+
+/* ── Node glows ── */
+.node-aura {
+  box-shadow: 0 0 15px rgba(187, 195, 255, 0.2);
+}
+.node-running-glow {
+  box-shadow: 0 0 20px rgba(78, 222, 163, 0.3);
+}
+
+/* ── Glass morphism (60% opacity + backdrop-blur 12px) ── */
+.glass {
+  background: rgba(45, 52, 73, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ── Ambient shadows (never standard Material) ── */
+.shadow-ambient {
+  box-shadow: 0 20px 40px rgba(6, 14, 32, 0.4);
+}
+
+/* ── Ghost border (20% opacity outline-variant) ── */
+.ghost-border {
+  border: 1px solid rgba(69, 70, 82, 0.2);
+}
+
+/* ── Primary gradient for action buttons ── */
+.gradient-primary {
+  background: linear-gradient(135deg, #2243ea, #bbc3ff);
+}
+
+/* ── Staggered entrance animation ── */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-slide-up {
+  animation: fadeSlideUp 0.4s ease-out forwards;
+}
+
+/* ── Pulse glow for running state ── */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 12px rgba(78, 222, 163, 0.2); }
+  50% { box-shadow: 0 0 24px rgba(78, 222, 163, 0.4); }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* ── React Flow overrides for dark theme ── */
+.react-flow__attribution { display: none !important; }
+.react-flow__controls {
+  background: #2d3449 !important;
+  border: 1px solid rgba(69, 70, 82, 0.2) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 40px rgba(6, 14, 32, 0.4) !important;
+}
+.react-flow__controls-button {
+  background: transparent !important;
+  border: none !important;
+  color: #c5c5d4 !important;
+  fill: #c5c5d4 !important;
+}
+.react-flow__controls-button:hover {
+  background: #31394d !important;
+  color: #dae2fd !important;
+  fill: #dae2fd !important;
+}
+.react-flow__minimap {
+  background: #171f33 !important;
+  border: 1px solid rgba(69, 70, 82, 0.2) !important;
+  border-radius: 12px !important;
+}
