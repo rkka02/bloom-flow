@@ -1,44 +1,73 @@
 # Bloom Flow
 
-Bloom Flow is a local-first multi-agent orchestration app for people who want a visual interface on top of real coding CLIs.
+Bloom Flow is a local-first multi-agent workspace for people who want to run real coding CLIs with either autonomous coordination or explicit visual orchestration.
 
-It supports:
+It has two operating modes:
 
-- Chat-based coordination with a persistent coordinator and worker pool
-- Graph-based orchestration for reusable multi-step workflows
-- Saved orchestration templates
-- Direct local execution through `codex`, `gemini`, and `claude` CLIs
-- Cross-worker messaging and per-agent session persistence
+- `Chat mode`: you talk to a coordinator agent, and the coordinator decides how to assemble a team, assign work, message workers, and reallocate effort across the session.
+- `Graph mode`: you build the team yourself by placing workers in a graph, assigning each one a role, backend, and prompt, then defining how work flows between them.
 
-Unlike proxy-based architectures, Bloom Flow does not depend on an OpenAI-compatible LLM proxy. It runs the installed provider CLIs directly in non-interactive mode and stores each agent's provider session ID so workers can resume with continuity across turns.
+Bloom Flow does not rely on an OpenAI-compatible proxy. It calls installed local CLIs like `codex`, `gemini`, and `claude` directly in non-interactive mode, then stores each agent's provider session ID so the same worker can resume across turns.
+
+## Two Ways To Use Bloom Flow
+
+| Mode | What you control | What Bloom controls | Best for |
+| --- | --- | --- | --- |
+| `Chat mode` | Goal, constraints, follow-up direction | Team composition, worker spawning, delegation, message passing, session continuity | Open-ended tasks where you want the coordinator to manage the team |
+| `Graph mode` | Worker layout, roles, backend choice, graph topology, execution flow | Node execution, state passing, persistent worker sessions | Repeatable pipelines and deliberate multi-agent setups |
+
+### Chat Mode
+
+In chat mode, Bloom Flow behaves like a multi-agent command center. You describe the task once, then the coordinator decides:
+
+- whether more workers are needed
+- which backend each worker should use
+- how work should be split
+- when teammates should message each other
+- when to continue an existing worker instead of creating a new one
+
+This is the mode for "build the team for me and manage the orchestration."
+
+### Graph Mode
+
+In graph mode, Bloom Flow behaves like a visual orchestration editor. You decide:
+
+- which workers exist
+- what each worker is responsible for
+- which backend each worker should run on
+- how nodes connect
+- where branching, looping, inputs, and outputs happen
+
+This is the mode for "I want to design the team structure and execution flow myself."
 
 ## Screenshots
 
-### Chat
+### Chat Mode
 
 ![Bloom Flow chat view](./screenshots/chat.png)
 
-### Graph Editor
+### Graph Mode
 
 ![Bloom Flow graph editor](./screenshots/graph.png)
 
-### Orchestration Templates
+### Saved Templates
 
 ![Bloom Flow templates view](./screenshots/templates.png)
 
-## What It Does
-
-- Start a chat session with a coordinator that can create tasks, spawn workers, continue existing workers, and summarize results
-- Build multi-agent graphs with worker, branch, loop, input, and output nodes
-- Reuse workers across turns and graph runs
-- Route messages between teammates through Bloom's internal mailbox layer
-- Persist Bloom sessions locally while also persisting provider-native sessions for Codex, Gemini, and Claude
-
 ## Why This Repo Exists
 
-This repo is the shareable, public version of Bloom Flow.
+This repository is the shareable, public version of Bloom Flow.
 
-The runtime intentionally avoids proxying vendor APIs behind a custom OpenAI-compatible gateway. Instead, it shells out to the actual local CLIs. That keeps the architecture simpler, avoids provider-policy ambiguity around API proxy layers, and makes the execution model easier to audit.
+The runtime intentionally avoids vendor API proxy layers. Instead of translating everything through a custom OpenAI-style endpoint, Bloom Flow shells out to the actual local CLIs. That keeps the public architecture simpler, easier to audit, and less likely to create policy ambiguity around proxying commercial model providers.
+
+## Core Capabilities
+
+- Coordinator-driven chat orchestration with persistent workers
+- Visual graph orchestration with reusable worker nodes
+- Cross-worker messaging through Bloom's internal mailbox layer
+- Direct local execution through `codex`, `gemini`, and `claude`
+- Provider-native session persistence so workers can resume with continuity
+- Saved orchestration templates for repeatable flows
 
 ## Architecture
 
@@ -122,4 +151,4 @@ The root `check` command builds all workspaces.
 
 ## Status
 
-Bloom Flow is functional and usable now, but it is still an evolving orchestration UI rather than a finished platform product. Expect the runtime contract, prompts, and graph behaviors to keep improving.
+Bloom Flow is already usable, but it is still evolving. Expect the runtime contract, prompts, and graph behaviors to keep changing as the project matures.
