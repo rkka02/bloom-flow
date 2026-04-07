@@ -94,6 +94,12 @@ Core runtime pieces:
   - `gemini`
   - `claude`
 
+Current platform note:
+
+- macOS is the primary tested environment right now
+- Linux should be workable, depending on local CLI setup
+- Windows may not work correctly yet; a Windows compatibility patch is planned soon
+
 If a provider CLI is installed but not authenticated, Bloom Flow can still run with the providers that are available.
 
 ## Getting Started
