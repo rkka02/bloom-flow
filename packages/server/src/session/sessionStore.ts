@@ -4,8 +4,9 @@ import { randomUUID } from 'node:crypto'
 import type { Session, SessionSummary, Agent, MailboxMessage, SessionGraph, WorkspaceConfig } from '@bloom/shared'
 import { resetTaskIds } from '../tasks/taskStore.js'
 import { normalizeModelName } from '../llm/models.js'
+import { normalizePersistedId, normalizeWorkspacePaths, tryNormalizePersistedId } from '../security.js'
 
-const BLOOM_DIR = join(process.env.HOME ?? '.', '.bloom')
+const BLOOM_DIR = join(process.env.BLOOM_HOME?.trim() || process.env.HOME || process.env.USERPROFILE || '.', '.bloom')
 
 let currentSession: Session | null = null
 
@@ -14,15 +15,12 @@ type WorkspaceOverrides = Partial<Omit<WorkspaceConfig, 'permissions'>> & {
 }
 
 export function normalizeWorkspace(overrides?: WorkspaceOverrides): WorkspaceConfig {
-  const rootDirInput = overrides?.rootDir?.trim()
-  const cwdInput = overrides?.cwd?.trim()
-  const rootDir = rootDirInput || cwdInput || process.cwd()
-  const cwd = cwdInput || rootDirInput || rootDir
+  const { rootDir, cwd } = normalizeWorkspacePaths(overrides)
 
   return {
     rootDir,
     cwd,
-    permissionMode: overrides?.permissionMode ?? 'dangerously-skip-permissions',
+    permissionMode: overrides?.permissionMode ?? 'default',
     permissions: {
       read: overrides?.permissions?.read ?? true,
       write: overrides?.permissions?.write ?? true,
@@ -174,8 +172,9 @@ export function addUserMessage(
 
 export async function loadSession(sessionId: string): Promise<Session | null> {
   try {
+    const safeSessionId = normalizePersistedId(sessionId, 'session id')
     const raw = await readFile(
-      join(BLOOM_DIR, 'sessions', sessionId, 'session.json'),
+      join(BLOOM_DIR, 'sessions', safeSessionId, 'session.json'),
       'utf-8',
     )
     const loadedSession: Session = JSON.parse(raw)
@@ -214,6 +213,7 @@ export async function listSessions(): Promise<SessionSummary[]> {
   const summaries: SessionSummary[] = []
 
   for (const dir of dirs) {
+    if (!tryNormalizePersistedId(dir)) continue
     try {
       const raw = await readFile(
         join(sessionsDir, dir, 'session.json'),
@@ -236,7 +236,14 @@ export async function listSessions(): Promise<SessionSummary[]> {
 }
 
 export async function renameSession(sessionId: string, name: string): Promise<boolean> {
-  const sessionPath = join(BLOOM_DIR, 'sessions', sessionId, 'session.json')
+  let safeSessionId: string
+  try {
+    safeSessionId = normalizePersistedId(sessionId, 'session id')
+  } catch {
+    return false
+  }
+
+  const sessionPath = join(BLOOM_DIR, 'sessions', safeSessionId, 'session.json')
   try {
     const raw = await readFile(sessionPath, 'utf-8')
     const session: Session = JSON.parse(raw)
@@ -254,11 +261,18 @@ export async function renameSession(sessionId: string, name: string): Promise<bo
 }
 
 export async function deleteSession(sessionId: string): Promise<boolean> {
-  const sessionDir = join(BLOOM_DIR, 'sessions', sessionId)
+  let safeSessionId: string
+  try {
+    safeSessionId = normalizePersistedId(sessionId, 'session id')
+  } catch {
+    return false
+  }
+
+  const sessionDir = join(BLOOM_DIR, 'sessions', safeSessionId)
   try {
     const { rm } = await import('node:fs/promises')
     await rm(sessionDir, { recursive: true, force: true })
-    if (currentSession?.id === sessionId) {
+    if (currentSession?.id === safeSessionId) {
       currentSession = null
     }
     return true

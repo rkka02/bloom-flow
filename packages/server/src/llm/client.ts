@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { ChatMessage, ChatResponse, ToolDef, WorkspaceConfig } from '@bloom/shared'
 import { normalizeModelName } from './models.js'
+import { normalizeWorkspacePaths } from '../security.js'
 
 export interface ChatOptions {
   model?: string
@@ -166,7 +167,7 @@ async function runGemini(
     '--output-format',
     'stream-json',
     '--approval-mode',
-    'yolo',
+    opts.workspace?.permissionMode === 'dangerously-skip-permissions' ? 'yolo' : 'default',
   ]
 
   const configuredModel = process.env.BLOOM_GEMINI_MODEL?.trim()
@@ -220,7 +221,7 @@ async function runClaude(
     '--output-format',
     'json',
     '--permission-mode',
-    'bypassPermissions',
+    opts.workspace?.permissionMode === 'dangerously-skip-permissions' ? 'bypassPermissions' : 'default',
   ]
 
   const configuredModel = process.env.BLOOM_CLAUDE_MODEL?.trim()
@@ -439,11 +440,11 @@ function formatProviderFailure(
 }
 
 function resolveCwd(workspace?: WorkspaceConfig): string {
-  return workspace?.cwd?.trim() || workspace?.rootDir?.trim() || process.cwd()
+  return normalizeWorkspacePaths(workspace).cwd
 }
 
 function resolveRootDir(workspace?: WorkspaceConfig): string {
-  return workspace?.rootDir?.trim() || resolveCwd(workspace)
+  return normalizeWorkspacePaths(workspace).rootDir
 }
 
 function readNumber(value: unknown): number | undefined {

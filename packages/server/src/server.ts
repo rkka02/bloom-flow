@@ -17,14 +17,36 @@ let coordinatorAbort: AbortController | null = null
 
 export async function createServer() {
   const app = Fastify({ logger: false })
+  const allowedOrigins = parseAllowedOrigins()
+  const isAllowedRequestOrigin = (origin?: string) => isAllowedOrigin(origin, allowedOrigins)
 
-  await app.register(cors, { origin: true })
+  app.addHook('onRequest', async (req, reply) => {
+    const origin = typeof req.headers.origin === 'string' ? req.headers.origin : undefined
+    if (!isAllowedRequestOrigin(origin)) {
+      return reply.code(403).send({ error: 'Origin not allowed' })
+    }
+
+    reply.header('Cache-Control', 'no-store')
+    reply.header('X-Content-Type-Options', 'nosniff')
+  })
+
+  await app.register(cors, {
+    origin(origin, callback) {
+      callback(null, isAllowedRequestOrigin(origin))
+    },
+  })
   await app.register(websocket)
 
   // ---- WebSocket ----
 
   app.register(async function (fastify) {
-    fastify.get('/ws', { websocket: true }, (socket, _req) => {
+    fastify.get('/ws', { websocket: true }, (socket, req) => {
+      const origin = typeof req.headers.origin === 'string' ? req.headers.origin : undefined
+      if (!isAllowedRequestOrigin(origin)) {
+        socket.close(1008, 'Origin not allowed')
+        return
+      }
+
       addClient(socket)
 
       // Send current session state on connect
@@ -229,16 +251,23 @@ export async function createServer() {
     return { ...wf, nodes: normalized.nodes, edges: normalized.edges }
   })
 
-  app.post<{ Body: { name: string; description?: string; nodes: any[]; edges: any[]; id?: string } }>('/api/workflows', async (req) => {
+  app.post<{ Body: { name: string; description?: string; nodes: any[]; edges: any[]; id?: string } }>('/api/workflows', async (req, reply) => {
     const { saveWorkflow } = await import('./workflows/workflowStore.js')
     const normalized = normalizeGraph(req.body.nodes ?? [], req.body.edges ?? [])
-    return saveWorkflow({
-      id: req.body.id,
-      name: req.body.name,
-      description: req.body.description ?? '',
-      nodes: normalized.nodes,
-      edges: normalized.edges,
-    })
+    try {
+      return await saveWorkflow({
+        id: req.body.id,
+        name: req.body.name,
+        description: req.body.description ?? '',
+        nodes: normalized.nodes,
+        edges: normalized.edges,
+      })
+    } catch (err: any) {
+      if (err instanceof Error && err.message.startsWith('Invalid workflow id')) {
+        return reply.code(400).send({ error: err.message })
+      }
+      throw err
+    }
   })
 
   app.delete<{ Params: { id: string } }>('/api/workflows/:id', async (req) => {
@@ -312,6 +341,45 @@ export async function createServer() {
   })
 
   return app
+}
+
+function parseAllowedOrigins(): Set<string> {
+  const configured = process.env.BLOOM_ALLOWED_ORIGINS
+    ?.split(',')
+    .map(origin => normalizeOrigin(origin))
+    .filter((origin): origin is string => Boolean(origin))
+
+  if (configured && configured.length > 0) {
+    return new Set(configured)
+  }
+
+  const serverPort = parsePort(process.env.BLOOM_PORT, 3101)
+  const webPort = parsePort(process.env.BLOOM_WEB_PORT, 3102)
+  return new Set([
+    `http://127.0.0.1:${serverPort}`,
+    `http://localhost:${serverPort}`,
+    `http://127.0.0.1:${webPort}`,
+    `http://localhost:${webPort}`,
+  ])
+}
+
+function isAllowedOrigin(origin: string | undefined, allowedOrigins: Set<string>): boolean {
+  if (!origin) return true
+  const normalizedOrigin = normalizeOrigin(origin)
+  return normalizedOrigin !== null && allowedOrigins.has(normalizedOrigin)
+}
+
+function normalizeOrigin(origin: string): string | null {
+  try {
+    return new URL(origin).origin
+  } catch {
+    return null
+  }
+}
+
+function parsePort(raw: string | undefined, fallback: number): number {
+  const parsed = Number.parseInt(raw ?? '', 10)
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback
 }
 
 async function waitForGraphReply(sessionId: string, replyTo: string): Promise<string> {

@@ -1,7 +1,7 @@
 import { createServer } from './server.js'
 
 const HOST = process.env.BLOOM_HOST ?? '127.0.0.1'
-const PORT = parseInt(process.env.BLOOM_PORT ?? '3101')
+const PORT = parseInt(process.env.BLOOM_PORT ?? '3101', 10)
 
 async function main() {
   const app = await createServer()

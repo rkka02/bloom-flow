@@ -3,8 +3,9 @@ import { join } from 'node:path'
 import { randomUUID } from 'node:crypto'
 import type { AgentId, MailboxMessage } from '@bloom/shared'
 import { addSessionMessage } from '../session/sessionStore.js'
+import { normalizePersistedId } from '../security.js'
 
-const BLOOM_DIR = join(process.env.HOME ?? '.', '.bloom')
+const BLOOM_DIR = join(process.env.BLOOM_HOME?.trim() || process.env.HOME || process.env.USERPROFILE || '.', '.bloom')
 
 function isInternalGraphParticipant(agentId: AgentId): boolean {
   return agentId.startsWith('__graph__')
@@ -23,7 +24,7 @@ function decodeInboxId(encodedAgentId: string): AgentId {
 }
 
 function inboxDir(sessionId: string, agentId: AgentId): string {
-  return join(BLOOM_DIR, 'sessions', sessionId, 'inboxes', encodeInboxId(agentId))
+  return join(BLOOM_DIR, 'sessions', normalizePersistedId(sessionId, 'session id'), 'inboxes', encodeInboxId(agentId))
 }
 
 /** Write a message to an agent's inbox */

@@ -4,7 +4,7 @@ export function buildCoordinatorSystemPrompt(workspace?: WorkspaceConfig): strin
   const workspaceBlock = [
     `Team root: ${workspace?.rootDir || '(not set)'}`,
     `Coordinator cwd: ${workspace?.cwd || workspace?.rootDir || '(not set)'}`,
-    `Permission mode: ${workspace?.permissionMode ?? 'dangerously-skip-permissions'}`,
+    `Permission mode: ${workspace?.permissionMode ?? 'default'}`,
     `Permissions: read=${workspace?.permissions.read ? 'yes' : 'no'}, write=${workspace?.permissions.write ? 'yes' : 'no'}, execute=${workspace?.permissions.execute ? 'yes' : 'no'}`,
   ].join('\n')
 

@@ -86,7 +86,7 @@ const emptyState: SessionState = {
   workspace: {
     rootDir: '',
     cwd: '',
-    permissionMode: 'dangerously-skip-permissions',
+    permissionMode: 'default',
     permissions: { read: true, write: true, execute: true },
   },
 }

@@ -1,15 +1,16 @@
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { Task, TaskId, AgentId } from '@bloom/shared'
+import { normalizePersistedId } from '../security.js'
 
-const BLOOM_DIR = join(process.env.HOME ?? '.', '.bloom')
+const BLOOM_DIR = join(process.env.BLOOM_HOME?.trim() || process.env.HOME || process.env.USERPROFILE || '.', '.bloom')
 
 function tasksDir(sessionId: string): string {
-  return join(BLOOM_DIR, 'sessions', sessionId, 'tasks')
+  return join(BLOOM_DIR, 'sessions', normalizePersistedId(sessionId, 'session id'), 'tasks')
 }
 
 function taskPath(sessionId: string, taskId: TaskId): string {
-  return join(tasksDir(sessionId), `${taskId}.json`)
+  return join(tasksDir(sessionId), `${normalizePersistedId(taskId, 'task id')}.json`)
 }
 
 let nextId = 1

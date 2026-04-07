@@ -34,6 +34,7 @@ export function WorkspaceSettingsModal({ isOpen, value, onClose, onSave }: Props
           <div>
             <h3 className="text-lg font-extrabold text-on-surface font-headline">Workspace Settings</h3>
             <p className="text-sm text-on-surface-variant mt-1 font-body">Set the team root directory and local CLI permission mode for this session.</p>
+            <p className="text-xs text-on-surface-variant/80 mt-2 font-body">Use <code>default</code> unless you explicitly want the providers to bypass their normal approval flow.</p>
           </div>
           <button onClick={onClose} className="material-symbols-outlined text-on-surface-variant hover:text-on-surface transition-colors">close</button>
         </div>
@@ -63,8 +64,8 @@ export function WorkspaceSettingsModal({ isOpen, value, onClose, onSave }: Props
               value={form.permissionMode}
               onChange={e => setForm(prev => ({ ...prev, permissionMode: e.target.value as WorkspaceSettingsValue['permissionMode'] }))}
             >
-              <option value="dangerously-skip-permissions">dangerously-skip-permissions</option>
               <option value="default">default</option>
+              <option value="dangerously-skip-permissions">dangerously-skip-permissions</option>
             </select>
           </Field>
 
@@ -85,6 +86,9 @@ export function WorkspaceSettingsModal({ isOpen, value, onClose, onSave }: Props
                 </label>
               ))}
             </div>
+            <p className="text-xs text-on-surface-variant/80 font-body mt-2">
+              These flags are advisory context for agents. The enforced runtime boundary comes from the provider CLI permission mode above.
+            </p>
           </Field>
         </div>
 

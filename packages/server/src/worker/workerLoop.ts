@@ -316,7 +316,7 @@ function buildWorkerSystemPrompt(agent: Agent): string {
   const workspaceLines = [
     `Team root: ${agent.workspace?.rootDir || '(not set)'}`,
     `Working directory: ${agent.workspace?.cwd || agent.workspace?.rootDir || '(not set)'}`,
-    `Permission mode: ${agent.workspace?.permissionMode ?? 'dangerously-skip-permissions'}`,
+    `Permission mode: ${agent.workspace?.permissionMode ?? 'default'}`,
     `Permissions: read=${agent.workspace?.permissions.read ? 'yes' : 'no'}, write=${agent.workspace?.permissions.write ? 'yes' : 'no'}, execute=${agent.workspace?.permissions.execute ? 'yes' : 'no'}`,
   ].join('\n')
 

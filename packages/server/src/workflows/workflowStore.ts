@@ -1,8 +1,9 @@
 import { mkdir, readdir, readFile, writeFile, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { randomUUID } from 'node:crypto'
+import { normalizePersistedId, tryNormalizePersistedId } from '../security.js'
 
-const BLOOM_DIR = join(process.env.HOME ?? '.', '.bloom')
+const BLOOM_DIR = join(process.env.BLOOM_HOME?.trim() || process.env.HOME || process.env.USERPROFILE || '.', '.bloom')
 const WORKFLOWS_DIR = join(BLOOM_DIR, 'workflows')
 
 export interface SavedWorkflow {
@@ -40,6 +41,8 @@ export async function listWorkflows(): Promise<WorkflowSummary[]> {
 
   const summaries: WorkflowSummary[] = []
   for (const file of files.filter(f => f.endsWith('.json')).sort()) {
+    const rawId = file.slice(0, -'.json'.length)
+    if (!tryNormalizePersistedId(rawId)) continue
     try {
       const raw = await readFile(join(WORKFLOWS_DIR, file), 'utf-8')
       const wf: SavedWorkflow = JSON.parse(raw)
@@ -60,7 +63,8 @@ export async function listWorkflows(): Promise<WorkflowSummary[]> {
 
 export async function getWorkflow(id: string): Promise<SavedWorkflow | null> {
   try {
-    const raw = await readFile(join(WORKFLOWS_DIR, `${id}.json`), 'utf-8')
+    const safeId = normalizePersistedId(id, 'workflow id')
+    const raw = await readFile(join(WORKFLOWS_DIR, `${safeId}.json`), 'utf-8')
     return JSON.parse(raw)
   } catch {
     return null
@@ -76,11 +80,13 @@ export async function saveWorkflow(data: {
 }): Promise<SavedWorkflow> {
   await ensureDir()
   const now = new Date().toISOString()
-  const id = data.id ?? randomUUID().slice(0, 12)
+  const id = data.id
+    ? normalizePersistedId(data.id, 'workflow id')
+    : randomUUID().slice(0, 12)
 
   let existing: SavedWorkflow | null = null
-  if (data.id) {
-    existing = await getWorkflow(data.id)
+  if (id) {
+    existing = await getWorkflow(id)
   }
 
   const wf: SavedWorkflow = {
@@ -99,7 +105,8 @@ export async function saveWorkflow(data: {
 
 export async function deleteWorkflow(id: string): Promise<boolean> {
   try {
-    await rm(join(WORKFLOWS_DIR, `${id}.json`), { force: true })
+    const safeId = normalizePersistedId(id, 'workflow id')
+    await rm(join(WORKFLOWS_DIR, `${safeId}.json`), { force: true })
     return true
   } catch {
     return false
