@@ -44,7 +44,7 @@ This is the mode for "I want to design the team structure and execution flow mys
 
 ### Chat Mode
 
-![Bloom Flow chat view](./screenshots/chat.png)
+![Bloom Flow chat view](./screenshots/chat-mode.png)
 
 ### Graph Mode
 
